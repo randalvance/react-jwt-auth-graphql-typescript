@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express from "express";
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
+import { createConnection } from "typeorm";
 import { UserResolver } from "./UserResolver";
 
 (async () => {
@@ -9,6 +10,8 @@ import { UserResolver } from "./UserResolver";
     app.get('/', (_req, res) => {
         res.send('Hello');
     });
+
+    await createConnection();
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
