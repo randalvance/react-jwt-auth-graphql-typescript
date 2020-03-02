@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRegisterMutation } from '../generated/graphql';
 
 interface Props {
 
@@ -7,14 +8,20 @@ interface Props {
 export const Register: React.FC<Props> = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [register] = useRegisterMutation();
     return (
         <>
             <h1>Register</h1>
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
                 e.preventDefault();
-                console.log('Form Submitted');
-                console.log('Email', email);
-                console.log('Password', password);
+                const response = await register({
+                    variables: {
+                        email,
+                        password
+                    }
+                });
+
+                console.log(response);
             }}>
                 <div>
                     <input
