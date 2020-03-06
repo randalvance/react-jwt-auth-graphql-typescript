@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import dotenv from "dotenv";
 import express from "express";
-import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import { createConnection } from "typeorm";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
 import { UserResolver } from "./UserResolver";
 import { verify } from "jsonwebtoken";
 import { User } from "./entity/User";
@@ -15,6 +16,10 @@ dotenv.config();
 
 (async () => {
     const app = express();
+    app.use(cors({
+        credentials: true,
+        origin: "http://localhost:3000",
+    }));
     app.use(cookieParser());
 
     app.get('/', (_req, res) => {
@@ -56,7 +61,7 @@ dotenv.config();
         context: ({ req, res }) => ({ req, res })
     });
 
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
 
     app.listen(5000, () => {
         console.log('App listening at localhost:5000');
